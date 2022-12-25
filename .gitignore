@@ -5,3 +5,5 @@ test*
 *.jpg
 *.png
 *.webp
+/unfinished
+*.bak
