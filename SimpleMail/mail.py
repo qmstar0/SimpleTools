@@ -184,7 +184,8 @@ class Mail(MailContent):
         return self
 
     def __exit__(self, exc_type, exc_info, exc_trackback):
-        pass
+        self.quit()
+
 
     def connect(self, host: str, port: int, username: str, password: str, timeout: float = 5, ssl: bool = True):
         """连接到smtp服务器
@@ -207,6 +208,12 @@ class Mail(MailContent):
         self.__smtp.ehlo(host)
         self.__smtp.login(username, password)
 
+    def quit(self):
+        """关闭与smtp服务器的会话
+        """
+        if self.__smtp is not None:
+            self.__smtp.quit()
+
     def send(self):
         """
         发送邮件
@@ -217,11 +224,13 @@ class Mail(MailContent):
             raise MailServerError("smtp服务未启动, 请先执行`connect(...)`")
         to = self.to_list if len(self.to_list) >= 2 else self.to_list.pop()
 
-        try: 
-            result = self.__smtp.sendmail(self.From, to, self.as_string())
-            return result
-        finally:
-            self.__smtp.quit()
+        result = self.__smtp.sendmail(self.From, to, self.as_string())
+        return result
+
+    def remail(self):
+        f, t = self.From, self.to_list
+        self.__dict__.clear()
+        self.__init__(from_addr=f, to_addr=t)
 
 
 class Mail163(Mail):
