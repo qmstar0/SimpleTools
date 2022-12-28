@@ -198,7 +198,6 @@ class Mail(MailContent):
             timeout (float, optional): 超时时长. 默认 5.
             ssl (bool, optional): 是否开启ssl连接. 默认 True.
         """
-        print(self._type)
         if self._type not in username:
             raise MailUserError("传入的用户名与所用类对象不匹配, 若无您所使用的邮箱类型, 请使用通用邮箱类对象`Mail`")
 
